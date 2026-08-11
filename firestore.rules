@@ -1,0 +1,54 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // وظيفة مساعدة للتحقق من هوية المستخدم
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // وظيفة للتحقق من أن المستخدم يعدل بياناته الشخصية فقط
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    // 1. ملفات الزوار (Visitors)
+    match /visitors/{visitorId} {
+      // يسمح للقراءة للجميع (من أجل لوحة المتصدرين) ولكن بشروط
+      allow read: if isSignedIn();
+      
+      // يسمح بإنشاء الملف الشخصي فقط إذا كان المستخدم هو صاحب الهوية
+      allow create: if isSignedIn() && isOwner(visitorId);
+      
+      // الأهم: تحديث النقاط
+      allow update: if isSignedIn() && isOwner(visitorId)
+        && request.resource.data.totalPoints >= resource.data.totalPoints // منع إنقاص النقاط
+        && request.resource.data.totalPoints <= resource.data.totalPoints + 50 // منع القفزات الكبيرة (تزوير)
+        && request.resource.data.createdAt == resource.data.createdAt; // منع تغيير تاريخ الإنشاء
+    }
+
+    // 2. سجل الإنجازات (Completions) - مجموعة فرعية
+    match /visitors/{visitorId}/completions/{completionId} {
+      // لا أحد يرى سجل إنجازاتك غيرك
+      allow read: if isSignedIn() && isOwner(visitorId);
+      
+      // إضافة إنجاز جديد
+      allow create: if isSignedIn() && isOwner(visitorId)
+        && request.resource.data.pointsEarned <= 50; // التحقق من سقف النقاط لكل تحدي
+    }
+
+    // 3. المواقع التراثية (Heritage Sites)
+    match /heritage_sites/{siteId} {
+      // القراءة متاحة للجميع (بيانات عامة)
+      allow read: if true;
+      
+      // الكتابة ممنوعة تماماً من التطبيق (تتم فقط من لوحة تحكم الإدارة)
+      allow write: if false;
+    }
+
+    // 4. منع الوصول لأي مجموعة أخرى غير معرفة
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

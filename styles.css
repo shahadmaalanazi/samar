@@ -1,0 +1,241 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 3px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 6px);
+  --radius-2xl: calc(var(--radius) + 12px);
+  --radius-3xl: calc(var(--radius) + 20px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sand: var(--sand);
+  --color-clay: var(--clay);
+  --color-gold: var(--gold);
+  --color-ink: var(--ink);
+  --font-display: "Amiri", serif;
+  --font-sans: "Tajawal", system-ui, sans-serif;
+}
+
+:root {
+  --radius: 1.125rem;
+  /* Warm sand / mudbrick palette taken from the SAMAR brand board */
+  --background: oklch(0.965 0.012 80);
+  --foreground: oklch(0.28 0.04 55);
+  --card: oklch(0.98 0.009 82);
+  --card-foreground: oklch(0.28 0.04 55);
+  --popover: oklch(0.98 0.009 82);
+  --popover-foreground: oklch(0.28 0.04 55);
+  --primary: oklch(0.43 0.075 52);
+  --primary-foreground: oklch(0.975 0.012 84);
+  --secondary: oklch(0.925 0.021 78);
+  --secondary-foreground: oklch(0.36 0.055 52);
+  --muted: oklch(0.93 0.017 80);
+  --muted-foreground: oklch(0.53 0.035 60);
+  --accent: oklch(0.69 0.09 62);
+  --accent-foreground: oklch(0.99 0.008 84);
+  --destructive: oklch(0.55 0.17 28);
+  --destructive-foreground: oklch(0.98 0.01 84);
+  --border: oklch(0.885 0.022 78);
+  --input: oklch(0.885 0.022 78);
+  --ring: oklch(0.69 0.09 62);
+  --sand: oklch(0.94 0.02 80);
+  --clay: oklch(0.52 0.08 50);
+  --gold: oklch(0.72 0.1 68);
+  --ink: oklch(0.24 0.03 52);
+
+  --shadow-soft: 0 10px 30px -14px oklch(0.35 0.05 55 / 0.35);
+  --shadow-card: 0 6px 20px -12px oklch(0.35 0.05 55 / 0.4);
+  --gradient-warm: linear-gradient(150deg, var(--sand), var(--background));
+  --gradient-veil: linear-gradient(to top, oklch(0.24 0.03 52 / 0.82), transparent 65%);
+}
+
+.dark {
+  --background: oklch(0.19 0.017 55);
+  --foreground: oklch(0.94 0.014 80);
+  --card: oklch(0.235 0.02 55);
+  --card-foreground: oklch(0.94 0.014 80);
+  --popover: oklch(0.235 0.02 55);
+  --popover-foreground: oklch(0.94 0.014 80);
+  --primary: oklch(0.72 0.1 68);
+  --primary-foreground: oklch(0.2 0.025 52);
+  --secondary: oklch(0.28 0.024 55);
+  --secondary-foreground: oklch(0.93 0.015 80);
+  --muted: oklch(0.28 0.024 55);
+  --muted-foreground: oklch(0.72 0.025 70);
+  --accent: oklch(0.68 0.095 62);
+  --accent-foreground: oklch(0.2 0.025 52);
+  --destructive: oklch(0.62 0.17 28);
+  --destructive-foreground: oklch(0.97 0.01 84);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.68 0.095 62);
+  --sand: oklch(0.28 0.024 55);
+  --clay: oklch(0.62 0.08 55);
+  --gold: oklch(0.76 0.1 70);
+  --ink: oklch(0.14 0.015 52);
+
+  --shadow-soft: 0 10px 30px -14px oklch(0 0 0 / 0.6);
+  --shadow-card: 0 6px 20px -12px oklch(0 0 0 / 0.65);
+  --gradient-warm: linear-gradient(150deg, oklch(0.235 0.02 55), var(--background));
+  --gradient-veil: linear-gradient(to top, oklch(0.12 0.015 52 / 0.9), transparent 65%);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+  }
+}
+
+@utility surface-warm {
+  background-image: var(--gradient-warm);
+}
+
+@utility veil {
+  background-image: var(--gradient-veil);
+}
+
+@utility shadow-soft {
+  box-shadow: var(--shadow-soft);
+}
+
+@utility shadow-card {
+  box-shadow: var(--shadow-card);
+}
+
+@utility hide-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ---- SAMAR refinements: gradients, shadows, motion ---- */
+:root {
+  --gradient-gold: linear-gradient(135deg, var(--gold), var(--clay));
+  --gradient-card: linear-gradient(160deg, oklch(1 0 0 / 0.7), oklch(0.94 0.02 80 / 0.35));
+  --gradient-brand: linear-gradient(140deg, oklch(0.5 0.08 52), oklch(0.72 0.1 68));
+  --shadow-elevated: 0 22px 48px -26px oklch(0.32 0.05 55 / 0.55), 0 2px 6px -2px oklch(0.32 0.05 55 / 0.18);
+  --shadow-glow: 0 0 0 8px oklch(0.72 0.1 68 / 0.12), 0 18px 40px -20px oklch(0.5 0.09 55 / 0.55);
+}
+
+.dark {
+  --gradient-card: linear-gradient(160deg, oklch(1 0 0 / 0.06), oklch(1 0 0 / 0.01));
+  --gradient-brand: linear-gradient(140deg, oklch(0.62 0.09 58), oklch(0.78 0.1 70));
+  --shadow-elevated: 0 22px 48px -26px oklch(0 0 0 / 0.8), 0 2px 6px -2px oklch(0 0 0 / 0.5);
+  --shadow-glow: 0 0 0 8px oklch(0.76 0.1 70 / 0.1), 0 18px 40px -20px oklch(0 0 0 / 0.75);
+}
+
+@utility shadow-elevated {
+  box-shadow: var(--shadow-elevated);
+}
+
+@utility shadow-glow {
+  box-shadow: var(--shadow-glow);
+}
+
+@utility surface-card {
+  background-image: var(--gradient-card);
+}
+
+@utility surface-brand {
+  background-image: var(--gradient-brand);
+}
+
+@utility text-gold {
+  background-image: var(--gradient-gold);
+  background-clip: text;
+  color: transparent;
+}
+
+@keyframes samar-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes samar-ring {
+  0% {
+    opacity: 0.55;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+@keyframes samar-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@utility page-enter {
+  animation: samar-rise 0.42s cubic-bezier(0.22, 0.8, 0.3, 1) both;
+}
+
+@utility pulse-ring {
+  animation: samar-ring 2s ease-out infinite;
+}
+
+@utility shimmer-line {
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    oklch(0.85 0.08 70 / 0.55),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: samar-shimmer 1.8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter,
+  .pulse-ring,
+  .shimmer-line {
+    animation: none;
+  }
+}

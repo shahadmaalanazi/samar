@@ -51,36 +51,46 @@ export async function POST(req: Request) {
     }
 
     const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, "");
+    const modelsToTry = ["gemini-3.5-flash", "gemini-3.6-flash", "gemini-flash-latest"];
+    let rawText = "";
 
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                { text: VISION_SYSTEM_PROMPT },
+    for (const model of modelsToTry) {
+      try {
+        const res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [
                 {
-                  inline_data: {
-                    mime_type: "image/jpeg",
-                    data: cleanBase64,
-                  },
+                  parts: [
+                    { text: VISION_SYSTEM_PROMPT },
+                    {
+                      inline_data: {
+                        mime_type: "image/jpeg",
+                        data: cleanBase64,
+                      },
+                    },
+                  ],
                 },
               ],
-            },
-          ],
-        }),
-      }
-    );
+            }),
+          }
+        );
 
-    if (!res.ok) {
-      throw new Error(`Gemini Vision API returned ${res.status}`);
+        if (res.ok) {
+          const data = await res.json();
+          rawText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
+          if (rawText) break;
+        }
+      } catch {
+        // Continue to next model
+      }
     }
 
-    const data = await res.json();
-    const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
+    if (!rawText) throw new Error("Empty response from vision models");
+
     const jsonText = extractJson(rawText);
     const parsed = JSON.parse(jsonText);
 

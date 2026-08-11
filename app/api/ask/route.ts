@@ -23,29 +23,34 @@ export async function POST(req: Request) {
 
 اكتب ردك مباشرة:`;
 
-    // Direct REST API call to Gemini - 100% reliable in Netlify Serverless Functions
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: systemPrompt }] }],
-        }),
-      }
-    );
+    const modelsToTry = ["gemini-3.5-flash", "gemini-3.6-flash", "gemini-flash-latest"];
+    let answer = "";
 
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error("Gemini REST API error response:", res.status, errorText);
-      throw new Error(`Gemini API returned ${res.status}`);
+    for (const model of modelsToTry) {
+      try {
+        const res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: systemPrompt }] }],
+            }),
+          }
+        );
+
+        if (res.ok) {
+          const data = await res.json();
+          answer = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
+          if (answer) break;
+        }
+      } catch (e) {
+        console.warn(`Model ${model} failed, trying next...`, e);
+      }
     }
 
-    const data = await res.json();
-    const answer = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-
     if (!answer) {
-      throw new Error("Empty text returned from Gemini API");
+      throw new Error("Empty text returned from Gemini API models");
     }
 
     return Response.json({ answer, source: "Gemini AI", isLive: true });

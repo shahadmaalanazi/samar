@@ -50,14 +50,14 @@ function PlaceDetails() {
 
   return (
     <div className="surface-warm flex min-h-screen justify-center">
-      <div className="w-full max-w-lg bg-background pb-12">
+      <div className="w-full max-w-2xl bg-background pb-12">
         <div className="relative">
           <img
             src={place.image}
             alt={place.name}
             width={800}
             height={600}
-            className="h-80 w-full object-cover"
+            className="h-64 sm:h-80 md:h-96 w-full object-cover"
           />
           <div className="veil absolute inset-0" />
           <div className="absolute inset-x-0 top-0 flex items-center justify-between p-5">
@@ -128,7 +128,7 @@ function PlaceDetails() {
           <Link
             to="/player/$placeId"
             params={{ placeId: place.id }}
-            className="surface-brand block w-full rounded-full py-4 text-center text-sm font-bold text-primary-foreground shadow-glow transition-transform duration-300 active:scale-[0.98]"
+            className="surface-brand block w-full max-w-sm mx-auto rounded-full py-4 text-center text-sm font-bold text-primary-foreground shadow-glow transition-transform duration-300 active:scale-[0.98]"
           >
             ابدأ الجولة
           </Link>

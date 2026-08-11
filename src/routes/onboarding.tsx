@@ -6,6 +6,7 @@ import diriyah from "@/assets/diriyah.jpg";
 import masmak from "@/assets/masmak.jpg";
 import { cn } from "@/lib/utils";
 import { playClickSound, playSlideSound, playSuccessSound } from "@/lib/sound-fx";
+import { BlindModeButton } from "@/components/blind-mode-button";
 
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
@@ -87,21 +88,24 @@ export function Onboarding() {
 
   return (
     <div className="surface-warm flex min-h-screen justify-center">
-      <div className="relative flex min-h-screen w-full max-w-lg flex-col overflow-hidden bg-background">
+      <div className="relative flex min-h-screen w-full max-w-2xl flex-col overflow-hidden bg-background">
 
-        {/* Skip */}
-        <div className="flex justify-start px-5 pt-6">
-          <a
-            href="/home"
-            onClick={() => {
-              try {
-                playClickSound();
-              } catch {}
-            }}
-            className="text-xs text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
-          >
-            تخطي
-          </a>
+        {/* Top bar with Skip & BlindMode */}
+        <div className="px-5 pt-4 space-y-3">
+          <div className="flex justify-between items-center">
+            <a
+              href="/home"
+              onClick={() => {
+                try {
+                  playClickSound();
+                } catch {}
+              }}
+              className="text-xs text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
+            >
+              تخطي
+            </a>
+          </div>
+          <BlindModeButton />
         </div>
 
         {/* Title */}

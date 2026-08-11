@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Moon, Globe, Bell, Volume2, Info, LogOut } from "lucide-react";
+import { Moon, Globe, Bell, Volume2, Info, LogOut, Eye } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { PageHeader } from "@/components/chrome";
 import { useAppState } from "@/lib/app-state";
@@ -63,14 +63,26 @@ function Row({
 }
 
 function SettingsPage() {
-  const { theme, toggleTheme, lang, toggleLang } = useAppState();
+  const { theme, toggleTheme, lang, toggleLang, blindMode, toggleBlindMode } = useAppState();
   const [notif, setNotif] = useState(true);
   const [autoplay, setAutoplay] = useState(false);
 
   return (
     <AppShell>
       <PageHeader title="الإعدادات" actions={<span />} />
-      <ul className="space-y-3 px-5">
+      <ul className="space-y-3 px-5 max-w-xl mx-auto w-full">
+        <li className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 shadow-card">
+          <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500 text-amber-950">
+              <Eye className="h-5 w-5" />
+            </span>
+            <div className="flex flex-col">
+              <span className="text-sm font-bold text-foreground">وضع المكفوفين (Blind Mode)</span>
+              <span className="text-xs text-muted-foreground">لمسة واحدة للتحديد والقراءة، ضغطتان للتنفيذ</span>
+            </div>
+            <Toggle on={blindMode} onClick={toggleBlindMode} />
+          </div>
+        </li>
         <Row icon={<Moon className="h-4.5 w-4.5" />} label="الوضع الليلي">
           <Toggle on={theme === "dark"} onClick={toggleTheme} />
         </Row>
@@ -90,7 +102,7 @@ function SettingsPage() {
 
       <button
         type="button"
-        className="mx-5 mt-6 flex w-[calc(100%-2.5rem)] items-center justify-center gap-2 rounded-full border border-destructive/40 py-3 text-sm font-bold text-destructive"
+        className="mx-auto mt-6 flex max-w-xl w-[calc(100%-2.5rem)] items-center justify-center gap-2 rounded-full border border-destructive/40 py-3 text-sm font-bold text-destructive"
       >
         <LogOut className="h-4 w-4" />
         تسجيل الخروج

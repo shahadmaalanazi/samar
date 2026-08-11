@@ -19,6 +19,8 @@ export const Route = createFileRoute("/home")({
   component: HomePage,
 });
 
+import { BlindModeButton } from "@/components/blind-mode-button";
+
 export function HomePage() {
   return (
     <AppShell>
@@ -35,7 +37,12 @@ export function HomePage() {
         </div>
       </header>
 
-      <div className="px-5 pt-5">
+      {/* 🔊 نمط سَمَر الشامل (للمكفوفين) */}
+      <div className="px-5 pt-4">
+        <BlindModeButton />
+      </div>
+
+      <div className="px-5 pt-4">
         <Link
           to="/explore"
           className="flex items-center gap-3 rounded-full border border-border bg-card px-4 py-3.5 shadow-elevated"

@@ -121,12 +121,15 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+import { BlindModeHandler } from "@/components/blind-mode-handler";
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
       <AppStateProvider>
+        <BlindModeHandler />
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
       </AppStateProvider>

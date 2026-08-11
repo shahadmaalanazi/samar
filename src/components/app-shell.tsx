@@ -11,13 +11,12 @@ const items: { to: string; label: string; icon: typeof Home; center?: boolean }[
   { to: "/profile", label: "ملفي", icon: User },
 ];
 
-
 export function BottomNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
     <nav className="sticky bottom-0 z-30 border-t border-border bg-card/85 shadow-elevated backdrop-blur-xl">
-      <ul className="mx-auto flex max-w-lg items-end justify-between px-4 pb-3 pt-2">
+      <ul className="mx-auto flex max-w-2xl items-end justify-between px-6 pb-3 pt-2">
         {items.map(({ to, label, icon: Icon, center }) => {
           const active = pathname.startsWith(to);
           if (center) {
@@ -65,8 +64,9 @@ export function AppShell({
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   return (
     <div className="surface-warm flex min-h-screen w-full justify-center">
-      <div className="flex min-h-screen w-full max-w-7xl flex-col border-border bg-background sm:border-x shadow-2xl">
-        <main key={pathname} className={cn("page-enter flex-1 pb-10 px-4 sm:px-8 pt-4", className)}>
+      {/* Centered app column: narrow on mobile, wider on tablet/laptop */}
+      <div className="flex min-h-screen w-full max-w-2xl flex-col border-border bg-background sm:border-x shadow-2xl">
+        <main key={pathname} className={cn("page-enter flex-1 pb-10", className)}>
           {children}
         </main>
         {nav ? <BottomNav /> : null}

@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/chrome";
 import { chatSuggestions, places } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { playClickSound, playMicSound } from "@/lib/sound-fx";
+import { getSamarSocialReply } from "@/lib/samar-social-rules";
 
 export const Route = createFileRoute("/voice")({
   head: () => ({
@@ -124,29 +125,36 @@ function VoicePage() {
     setResponse(`جاري تحضير القصة بصوت الراوي عن: "${question}"...`);
 
     let reply = "";
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2500);
 
-      const res = await fetch("/api/ask", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question, site: "التراث السعودي" }),
-        signal: controller.signal,
-      });
+    // Check fixed social rules first
+    const socialReply = getSamarSocialReply(question);
+    if (socialReply) {
+      reply = socialReply;
+    } else {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2500);
 
-      clearTimeout(timeoutId);
+        const res = await fetch("/api/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question, site: "التراث السعودي" }),
+          signal: controller.signal,
+        });
 
-      if (res.ok) {
-        const data = await res.json();
-        if (data.answer) reply = data.answer;
+        clearTimeout(timeoutId);
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data.answer) reply = data.answer;
+        }
+      } catch {
+        // Fallback seamlessly on timeout or network fail
       }
-    } catch {
-      // Fallback seamlessly on timeout or network fail
-    }
 
-    if (!reply) {
-      reply = generateHeritageAnswer(question);
+      if (!reply) {
+        reply = generateHeritageAnswer(question);
+      }
     }
 
     setLoading(false);

@@ -74,7 +74,7 @@ function PlayerPage() {
 
   return (
     <div className="flex min-h-screen justify-center bg-ink">
-      <div className="relative w-full max-w-4xl overflow-hidden shadow-2xl">
+      <div className="relative w-full max-w-2xl overflow-hidden shadow-2xl">
         <img
           src={place.image}
           alt={place.name}

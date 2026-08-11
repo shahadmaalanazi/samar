@@ -16,7 +16,8 @@ export function getSamarSocialReply(input: string): string | null {
     t === "يا هلا" ||
     t === "أهلا" ||
     t === "اهلا" ||
-    t.includes("مرحبتين")
+    t.includes("مرحبتين") ||
+    t.includes("اهلين")
   ) {
     return "وعليكم السلام ورحمة الله وبركاته، يا هلا ومرحبا! وش أقدر أخدمك فيه؟";
   }
@@ -29,7 +30,8 @@ export function getSamarSocialReply(input: string): string | null {
     t.includes("الله يعطيك العافية") ||
     t.includes("مشكور") ||
     t.includes("ما قصرت") ||
-    t.includes("تسلم ايدك")
+    t.includes("تسلم ايدك") ||
+    t.includes("تسلم")
   ) {
     return "العفو، ما سوّينا إلا الواجب! حياك الله بأي وقت.";
   }
@@ -81,10 +83,17 @@ export function getSamarSocialReply(input: string): string | null {
   if (
     t.includes("شلونك") ||
     t.includes("كيفك") ||
+    t.includes("كيف الحال") ||
+    t.includes("كيف حالك") ||
+    t.includes("كيف الحالك") ||
     t.includes("وش أخبارك") ||
     t.includes("وش اخبارك") ||
+    t.includes("اخبارك") ||
+    t.includes("أخبارك") ||
     t.includes("عساك بخير") ||
-    t.includes("علومك")
+    t.includes("علومك") ||
+    t.includes("شحالك") ||
+    t.includes("شخبار")
   ) {
     return "بخير ولله الحمد، دامك بخير! وش ودك تعرف؟";
   }

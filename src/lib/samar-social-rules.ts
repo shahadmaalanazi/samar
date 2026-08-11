@@ -4,143 +4,147 @@
  */
 
 export function getSamarSocialReply(input: string): string | null {
-  const t = input.trim().toLowerCase();
+  const raw = input.trim().toLowerCase();
+  const normalized = raw.replace(/[\s_\-]+/g, ""); // "السلامعليكم"
 
   // 1. التحية
   if (
-    t.includes("السلام عليكم") ||
-    t.includes("سلام عليكم") ||
-    t === "السلام" ||
-    t === "هلا" ||
-    t === "مرحبا" ||
-    t === "يا هلا" ||
-    t === "أهلا" ||
-    t === "اهلا" ||
-    t.includes("مرحبتين") ||
-    t.includes("اهلين")
+    normalized.includes("السلامعليكم") ||
+    normalized.includes("سلامعليكم") ||
+    raw.includes("السلام عليكم") ||
+    raw.includes("سلام عليكم") ||
+    raw === "السلام" ||
+    raw === "هلا" ||
+    raw === "مرحبا" ||
+    raw === "يا هلا" ||
+    raw === "أهلا" ||
+    raw === "اهلا" ||
+    raw.includes("مرحبتين") ||
+    raw.includes("اهلين")
   ) {
     return "وعليكم السلام ورحمة الله وبركاته، يا هلا ومرحبا! وش أقدر أخدمك فيه؟";
   }
 
   // 2. الشكر
   if (
-    t.includes("شكرا") ||
-    t.includes("شكرًا") ||
-    t.includes("يعطيك العافية") ||
-    t.includes("الله يعطيك العافية") ||
-    t.includes("مشكور") ||
-    t.includes("ما قصرت") ||
-    t.includes("تسلم ايدك") ||
-    t.includes("تسلم")
+    raw.includes("شكرا") ||
+    raw.includes("شكرًا") ||
+    raw.includes("يعطيك العافية") ||
+    raw.includes("الله يعطيك العافية") ||
+    raw.includes("مشكور") ||
+    raw.includes("ما قصرت") ||
+    raw.includes("تسلم ايدك") ||
+    raw.includes("تسلم")
   ) {
     return "العفو، ما سوّينا إلا الواجب! حياك الله بأي وقت.";
   }
 
   // 3. المدح
   if (
-    t.includes("كفو") ||
-    t.includes("رهيب") ||
-    t.includes("ممتاز") ||
-    t.includes("حلو") ||
-    t.includes("أحسنت") ||
-    t.includes("احسنت") ||
-    t.includes("ما شاء الله") ||
-    t.includes("مشاء الله") ||
-    t.includes("عجيب") ||
-    t.includes("مبدع")
+    raw.includes("كفو") ||
+    raw.includes("رهيب") ||
+    raw.includes("ممتاز") ||
+    raw.includes("حلو") ||
+    raw.includes("أحسنت") ||
+    raw.includes("احسنت") ||
+    raw.includes("ما شاء الله") ||
+    raw.includes("مشاء الله") ||
+    raw.includes("عجيب") ||
+    raw.includes("مبدع")
   ) {
     return "تسلم، هذا من ذوقك! ✨";
   }
 
   // 4. الاعتذار
   if (
-    t.includes("آسف") ||
-    t.includes("اسف") ||
-    t.includes("المعذرة") ||
-    t.includes("معذرة") ||
-    t.includes("سامحني") ||
-    t.includes("أعتذر") ||
-    t.includes("اعتذر")
+    raw.includes("آسف") ||
+    raw.includes("اسف") ||
+    raw.includes("المعذرة") ||
+    raw.includes("معذرة") ||
+    raw.includes("سامحني") ||
+    raw.includes("أعتذر") ||
+    raw.includes("اعتذر")
   ) {
     return "أبد ما عليك، ولا يهمك.";
   }
 
   // 5. الوداع
   if (
-    t.includes("مع السلامة") ||
-    t.includes("باي") ||
-    t.includes("اشوفك") ||
-    t.includes("أشوفك") ||
-    t.includes("بروح") ||
-    t.includes("إلى اللقاء") ||
-    t.includes("الى اللقاء") ||
-    t.includes("مع السلامه")
+    raw.includes("مع السلامة") ||
+    raw.includes("باي") ||
+    raw.includes("اشوفك") ||
+    raw.includes("أشوفك") ||
+    raw.includes("بروح") ||
+    raw.includes("إلى اللقاء") ||
+    raw.includes("الى اللقاء") ||
+    raw.includes("مع السلامه")
   ) {
     return "في أمان الله، ونشوفك على خير!";
   }
 
   // 6. السؤال عن الحال
   if (
-    t.includes("شلونك") ||
-    t.includes("كيفك") ||
-    t.includes("كيف الحال") ||
-    t.includes("كيف حالك") ||
-    t.includes("كيف الحالك") ||
-    t.includes("وش أخبارك") ||
-    t.includes("وش اخبارك") ||
-    t.includes("اخبارك") ||
-    t.includes("أخبارك") ||
-    t.includes("عساك بخير") ||
-    t.includes("علومك") ||
-    t.includes("شحالك") ||
-    t.includes("شخبار")
+    normalized.includes("شلونك") ||
+    normalized.includes("كيفك") ||
+    normalized.includes("كيفالحال") ||
+    normalized.includes("كيفحالك") ||
+    normalized.includes("كيفالحالك") ||
+    raw.includes("كيف الحال") ||
+    raw.includes("كيف حالك") ||
+    normalized.includes("وشاخبارك") ||
+    normalized.includes("اخبارك") ||
+    normalized.includes("أخبارك") ||
+    normalized.includes("عساكبخير") ||
+    normalized.includes("علومك") ||
+    normalized.includes("شحالك") ||
+    normalized.includes("شخبار")
   ) {
     return "بخير ولله الحمد، دامك بخير! وش ودك تعرف؟";
   }
 
   // 7. السؤال عن الهوية
   if (
-    t.includes("من أنت") ||
-    t.includes("من انت") ||
-    t.includes("وش اسمك") ||
-    t.includes("منو أنت") ||
-    t.includes("منو انت") ||
-    t.includes("وش تسوي")
+    raw.includes("من أنت") ||
+    raw.includes("من انت") ||
+    raw.includes("وش اسمك") ||
+    raw.includes("منو أنت") ||
+    raw.includes("منو انت") ||
+    raw.includes("وش تسوي")
   ) {
     return "أنا سَمَر، راويك الذكي. أرافقك في رحلتك وأحكي لك قصص الأماكن اللي تزورها.";
   }
 
   // 8. السؤال عن القدرة
   if (
-    t.includes("وش تقدر تسوي") ||
-    t.includes("وش تقدر") ||
-    t.includes("وش تعرف") ||
-    t.includes("وش تقدر تساعدني") ||
-    t.includes("وش تساعدني")
+    raw.includes("وش تقدر تسوي") ||
+    raw.includes("وش تقدر") ||
+    raw.includes("وش تعرف") ||
+    raw.includes("وش تقدر تساعدني") ||
+    raw.includes("وش تساعدني")
   ) {
     return "أقدر أحكي لك عن تاريخ المكان ومعالمه، وأجاوبك عن اللي تشوفه حولك، ونقدر بعد نسوي تحديات تراثية سوا.";
   }
 
   // 9. طلب إعادة الكلام
   if (
-    t.includes("ما سمعتك") ||
-    t.includes("أعد") ||
-    t.includes("اعد") ||
-    t.includes("عيد") ||
-    t.includes("ما فهمت") ||
-    t.includes("وش قلت") ||
-    t.includes("ممكن تعيد")
+    raw.includes("ما سمعتك") ||
+    raw.includes("أعد") ||
+    raw.includes("اعد") ||
+    raw.includes("عيد") ||
+    raw.includes("ما فهمت") ||
+    raw.includes("وش قلت") ||
+    raw.includes("ممكن تعيد")
   ) {
     return "أبشر، أعيدها لك.";
   }
 
   // 11. طلب المساعدة العامة
   if (
-    t.includes("ساعدني") ||
-    t.includes("وش أسوي") ||
-    t.includes("وش اسوي") ||
-    t.includes("أبي مساعدة") ||
-    t.includes("ابي مساعدة")
+    raw.includes("ساعدني") ||
+    raw.includes("وش أسوي") ||
+    raw.includes("وش اسوي") ||
+    raw.includes("أبي مساعدة") ||
+    raw.includes("ابي مساعدة")
   ) {
     return "أبشر، أنا معك. قل لي وش تحتاج.";
   }

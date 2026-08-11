@@ -1,7 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { identifySaudiLandmark, SAUDI_HERITAGE_DATABASE } from "@/lib/saudi-landmarks-db";
-
-const GEMINI_MODEL = "gemini-1.5-flash";
+import { identifySaudiLandmark } from "@/lib/saudi-landmarks-db";
 
 function extractJson(text: string): string {
   const match = text.match(/```(?:json)?\s*([\s\S]*?)```/);
@@ -30,19 +27,13 @@ const VISION_SYSTEM_PROMPT = `أنت مساعد ذكاء اصطناعي خبير
   "تصنيف": "موقع صخري / قلعة / بلدة قديمة / واحة",
   "معلومة_ممتعة": "حقيقة تاريخية حقيقية أو قصة قصيرة عن الموقع",
   "مرتبط_بقاعدة_البيانات": true
-}
-
-قواعد مهمة:
-- إذا كانت الصورة تحتوي على مقبرة منحوتة في صخرة بالصحراء مثل قصر الفريد، فالموقع هو "العلا (مدائن صالح/الحجر)" وليس قصر المصمك.
-- لا تختلق معلومات تاريخية غير مؤكدة.
-- حافظ على أسلوب لغوي عربي فصيح وسهل.`;
+}`;
 
 export async function POST(req: Request) {
   try {
     const { imageBase64, imageName } = await req.json();
     const apiKey = process.env.GEMINI_API_KEY;
 
-    // Smart Saudi landmark fallback lookup based on uploaded image content/filename
     const matchedLandmark = identifySaudiLandmark(imageName || imageBase64 || "");
 
     if (!apiKey || !imageBase64) {
@@ -59,28 +50,44 @@ export async function POST(req: Request) {
       });
     }
 
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
-
-    // Clean base64 header
     const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, "");
 
-    const result = await model.generateContent([
-      VISION_SYSTEM_PROMPT,
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
       {
-        inlineData: {
-          data: cleanBase64,
-          mimeType: "image/jpeg",
-        },
-      },
-    ]);
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                { text: VISION_SYSTEM_PROMPT },
+                {
+                  inline_data: {
+                    mime_type: "image/jpeg",
+                    data: cleanBase64,
+                  },
+                },
+              ],
+            },
+          ],
+        }),
+      }
+    );
 
-    const text = extractJson(result.response.text());
-    const parsed = JSON.parse(text);
+    if (!res.ok) {
+      throw new Error(`Gemini Vision API returned ${res.status}`);
+    }
+
+    const data = await res.json();
+    const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
+    const jsonText = extractJson(rawText);
+    const parsed = JSON.parse(jsonText);
+
     return Response.json(parsed);
   } catch (error) {
     console.error("⚠️ Vision API Error:", error);
-    const matchedLandmark = identifySaudiLandmark(imageBase64 || "");
+    const matchedLandmark = identifySaudiLandmark("");
     return Response.json({
       اسم_المعلم: matchedLandmark.اسم_المعلم,
       الموقع: matchedLandmark.الموقع,

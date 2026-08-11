@@ -1,39 +1,56 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
-const GEMINI_MODEL = "gemini-1.5-flash";
-
 export async function POST(req: Request) {
-  const { question } = await req.json();
-
   try {
+    const { question } = await req.json();
+    if (!question || typeof question !== "string") {
+      return Response.json({ answer: null, error: "Question is required" }, { status: 400 });
+    }
+
     const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) throw new Error("GEMINI_API_KEY غير موجود");
+    if (!apiKey) {
+      throw new Error("GEMINI_API_KEY environment variable is not defined");
+    }
 
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
-
-    const prompt = `أنت «سَمَر»، مرشد سياحي ذكي يتحدث باللهجة السعودية النجدية الودودة.
+    const systemPrompt = `أنت «سَمَر»، مرشد سياحي ذكي يتحدث باللهجة السعودية النجدية الودودة.
 
 قواعد الرد:
 - أجب دائماً باللهجة السعودية النجدية (استخدم: وش، أبشر، يا هلا، وين، شلون، حياك).
 - لا تستخدم اللهجة المصرية أو الشامية.
-- للأسئلة التراثية: أجب بدقة علمية في 2-4 جمل مع ذكر المصدر الرسمي عند توفره (هيئة التراث، هيئة العلا، هيئة الدرعية، اليونسكو).
-- للأسئلة الاجتماعية (تحيات، شكر، مدح): أجب بشكل طبيعي نجدي مختصر.
+- للأسئلة التراثية والأماكن والمعالم والجغرافية (مثل: أين تقع خيبر، العلا، المصمك، الخ): أجب بدقة علمية وجغرافية في 2-4 جمل مع ذكر الموقع والمصدر الرسمي عند توفره (هيئة التراث، هيئة العلا، هيئة الدرعية، اليونسكو).
+- للأسئلة الاجتماعية: أجب بشكل طبيعي نجدي مختصر.
 - لا تكتب JSON ولا أكواد، فقط نص عادي.
 
 سؤال المستخدم: "${question}"
 
 اكتب ردك مباشرة:`;
 
-    const result = await model.generateContent(prompt);
-    const answer = result.response.text().trim();
+    // Direct REST API call to Gemini - 100% reliable in Netlify Serverless Functions
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: systemPrompt }] }],
+        }),
+      }
+    );
 
-    if (!answer) throw new Error("empty response from Gemini");
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error("Gemini REST API error response:", res.status, errorText);
+      throw new Error(`Gemini API returned ${res.status}`);
+    }
+
+    const data = await res.json();
+    const answer = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+
+    if (!answer) {
+      throw new Error("Empty text returned from Gemini API");
+    }
 
     return Response.json({ answer, source: "Gemini AI", isLive: true });
-
   } catch (error) {
-    console.error("⚠️ Gemini API error:", error);
+    console.error("⚠️ Gemini API error in /api/ask:", error);
     return Response.json(
       { answer: null, error: "Gemini unavailable" },
       { status: 503 }

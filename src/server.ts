@@ -137,12 +137,13 @@ export default {
 
         const modelsToTry = ["gemini-3.5-flash", "gemini-3.6-flash", "gemini-flash-latest"];
         let answer = "";
+        let lastError = "";
 
         for (const model of modelsToTry) {
           try {
-            const res = await fetch(
-              `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
-              {
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+            const res = await fetch(apiUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -155,19 +156,22 @@ export default {
               const data = await res.json();
               answer = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
               if (answer) break;
+            } else {
+              const errBody = await res.text();
+              lastError = `${model}: ${res.status} - ${errBody.substring(0, 150)}`;
             }
-          } catch {
-            // Try next
+          } catch (e: any) {
+            lastError = `${model}: ${e.message}`;
           }
         }
 
         if (!answer) {
-          throw new Error("Empty text returned from Gemini API models");
+          throw new Error(`Gemini API unavailable. Last error: ${lastError}`);
         }
 
         return Response.json({ answer, source: "Gemini AI", isLive: true });
-      } catch (error) {
-        console.error("⚠️ Gemini API error in /api/ask:", error);
+      } catch (error: any) {
+        console.error("⚠️ Gemini API error in /api/ask:", error?.message || error);
         return Response.json(
           { answer: null, error: "Gemini unavailable" },
           { status: 503 }

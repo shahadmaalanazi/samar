@@ -25,29 +25,42 @@ export const Route = createFileRoute("/chat")({
 type Msg = { role: "user" | "assistant"; text: string };
 
 function generateHeritageAnswer(query: string): string {
-  const q = query.toLowerCase();
-  if (q.includes("وقت") || q.includes("زيارة") || q.includes("درعية") || q.includes("طريف")) {
-    return "أفضل وقت لزيارة الدرعية وحي الطريف التراثي هو خلال فصلي الشتاء والخريف (من أكتوبر إلى مارس)، للاستمتاع بالأجواء المعتدلة والفعاليات الثقافية والمطاعم التراثية على ضفاف وادي حنيفة.";
+  const q = query.trim().toLowerCase();
+
+  if (q.includes("وقت") || q.includes("متى") || q.includes("موسم") || q.includes("زيارة")) {
+    return "أفضل وقت لزيارة المعالم التراثية في المملكة هو خلال فصلي الشتاء والخريف (من أكتوبر إلى مارس)، للاستمتاع بالأجواء الصحراوية المعتدلة والفعاليات الثقافية والمطاعم التراثية.";
   }
-  if (q.includes("مصمك") || q.includes("بنى")) {
-    return "بُني قصر المصمك في عام 1895م في عهد الإمام عبد الله بن فيصل، وشهد انطلاقة توحيد المملكة على يد الملك عبد العزيز عام 1902م. يُعد حصناً طينياً عريقاً في قلب الرياض.";
+  if (q.includes("مصمك") || q.includes("رياض")) {
+    return "بُني قصر المصمك عام 1895م في عهد الإمام عبد الله بن فيصل، وشهد انطلاقة توحيد المملكة على يد الملك عبد العزيز عام 1902م. يُعد حصناً طينياً عريقاً بقلب الرياض.";
   }
-  if (q.includes("علا") || q.includes("أنباط") || q.includes("حجر")) {
-    return "العلا تضم موقع 'الحِجر' وهو أول موقع سعودي يُدرج ضمن قائمة اليونسكو للتراث العالمي. تشتهر بمقابر الأنباط المنحوتة في الجبال وتاريخ يتجاوز 2000 عام.";
+  if (q.includes("علا") || q.includes("أنباط") || q.includes("حجر") || q.includes("صالح")) {
+    return "العلا تضم موقع 'الحِجر' (مدائن صالح) وهو أول موقع سعودي يُدرج ضمن قائمة اليونسكو للتراث العالمي، ويمتاز بمقابر الأنباط المنحوتة في الجبال والتكوينات الصخرية الفريدة.";
   }
-  if (q.includes("جدة") || q.includes("بلد")) {
-    return "جدة التاريخية (البلد) تمتاز برواشينها الخشبية الجميلة ومساجدها الحجرية العتيقة، وكانت البوابة الرئيسية لحجاج بيت الله الحرام عبر التاريخ.";
+  if (q.includes("جدة") || q.includes("بلد") || q.includes("روشان") || q.includes("رواشين")) {
+    return "جدة التاريخية (البلد) تمتاز برواشينها الخشبية الجذابة ومبانيها المرجانية العريقة، وكانت البوابة الرئيسية لحجاج بيت الله الحرام عبر البحر الأحمر لقرون طويلة.";
   }
-  if (q.includes("أحساء") || q.includes("نخيل") || q.includes("واحة")) {
-    return "واحة الأحساء هي أكبر واحة نخيل قائمة بذاتها في العالم بـ 2.5 مليون نخلة، وتضم مواقع أثرية مثل جبل القارة وقصر إبراهيم التراثي.";
+  if (q.includes("أحساء") || q.includes("نخيل") || q.includes("قارة") || q.includes("واحة")) {
+    return "واحة الأحساء هي أكبر واحة نخيل مستقلة في العالم بـ 2.5 مليون نخلة ومسجلة لدى اليونسكو، وتضم جبل القارة وعيون الماء الدافئة وقصر إبراهيم التراثي.";
+  }
+  if (q.includes("درعية") || q.includes("طريف") || q.includes("سلوى")) {
+    return "الدرعية وحي الطريف المسجل في اليونسكو يمثلان مهد الدولة السعودية الأولى، وتضم قصر سلوى والمباني النجدية الطينية التاريخية المطلة على وادي حنيفة.";
+  }
+  if (q.includes("شرقية") || q.includes("تاروت") || q.includes("لؤلؤ") || q.includes("غوص")) {
+    return "جزيرة تاروت بالمنطقة الشرقية ترتبطان بتاريخ الغوص على اللؤلؤ وتجارة الخليج العربي القديمة الممتدة لأكثر من 5000 عام.";
+  }
+  if (q.includes("أكل") || q.includes("مطعم") || q.includes("شعبية") || q.includes("طعام")) {
+    return "المأكولات الشعبية والتراثية السعودية مثل الكبسة، الجريش، القرصان، والحنيني تعكس كرم الضيافة وتنوع الثقافة الغذائية عبر مناطق المملكة المتعددة.";
+  }
+  if (q.includes("كم") || q.includes("عدد") || q.includes("يونسكو") || q.includes("مواقع")) {
+    return "تضم المملكة العربية السعودية العديد من المواقع التراثية المسجلة رسمياً في قائمة اليونسكو للتراث العالمي، منها: الحِجر بالعلا، حي الطريف بالدرعية، جدة التاريخية، واحة الأحساء، والفنون الصخرية بحائل.";
   }
 
-  const matchedPlace = places.find((p) => q.includes(p.name.toLowerCase()));
+  const matchedPlace = places.find((p) => q.includes(p.name.toLowerCase()) || q.includes(p.region.toLowerCase()));
   if (matchedPlace) {
     return `${matchedPlace.name} (${matchedPlace.tagline}): ${matchedPlace.description}`;
   }
 
-  return "الدرعية وحي الطريف من أروع المعالم التراثية في المملكة، وتضم قصور الطين التاريخية والمتاحف الثقافية المتميزة.";
+  return `سؤالك عن "${query}" موضوع تراثي عريق! التراث السعودي مليء بالقصص والمعالم المجيدة التابعة لهيئة التراث بوزارة الثقافة.`;
 }
 
 function ChatPage() {
@@ -85,15 +98,15 @@ function ChatPage() {
       if (fixedReply) {
         replyText = fixedReply;
       } else {
-        // 2. Fetch from Gemini API with fast 2-second timeout
+        // 2. Fetch from Gemini API with generous 12-second timeout
         try {
           const controller = new AbortController();
-          const tid = setTimeout(() => controller.abort(), 2000);
+          const tid = setTimeout(() => controller.abort(), 12000);
 
           const res = await fetch("/api/ask", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ question: value, site: "الدرعية" }),
+            body: JSON.stringify({ question: value, site: "التراث السعودي" }),
             signal: controller.signal,
           });
 
@@ -103,8 +116,8 @@ function ChatPage() {
             const data = await res.json();
             if (data.answer) replyText = data.answer;
           }
-        } catch {
-          // Ignore API timeout and proceed to heritage answer engine
+        } catch (err) {
+          console.warn("API ask timeout or fail, using smart heritage reply:", err);
         }
 
         // 3. Fallback to smart heritage answer engine if API fails or times out
@@ -116,7 +129,6 @@ function ChatPage() {
       console.error("Chat error:", err);
       replyText = generateHeritageAnswer(value);
     } finally {
-      // GUARANTEED to stop loading animation under any circumstances
       setLoading(false);
     }
 
